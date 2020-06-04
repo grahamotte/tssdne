@@ -36,7 +36,7 @@ class Planet {
     const dim = y ? this.parent.maxY : this.parent.maxX;
     const follow = this.parent.followPlanet[y ? "y" : "x"];
 
-    return (follow - v) * this.parent.scale + dim / 2;
+    return (y ? -1 : 1) * (v - follow) * this.parent.scale + dim / 2;
   };
 
   update = () => {
@@ -108,8 +108,8 @@ class Store {
     );
 
     new Array(random(2, 8)).fill(0).forEach(() => {
-      const x = sample([random(0.3, 1, true), random(-0.3, -1, true)]);
-      const y = sample([random(0.3, 1, true), random(-0.3, -1, true)]);
+      const x = random(1, 3, true);
+      const y = 0;
 
       this.planets.push(
         new Planet({
@@ -117,8 +117,8 @@ class Store {
           mass: random(0, 0.00001, true),
           x: x,
           y: y,
-          vx: random(3, 10) * -y,
-          vy: random(3, 10) * x,
+          vx: 0,
+          vy: random(-3, -5, true),
         })
       );
     });

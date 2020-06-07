@@ -1,5 +1,5 @@
 import { action, computed, decorate, observable } from "mobx";
-import { random, sample } from "lodash";
+import { random, takeRight } from "lodash";
 
 class Planet {
   // const
@@ -39,6 +39,15 @@ class Planet {
     return (y ? -1 : 1) * (v - follow) * this.parent.scale + dim / 2;
   };
 
+  get trailViewport() {
+    return takeRight(this.trail, 50).flatMap((x) => {
+      return [
+        this.convertViewport(x[0], false),
+        this.convertViewport(x[1], true),
+      ];
+    });
+  }
+
   update = () => {
     var ax = 0;
     var ay = 0;
@@ -62,8 +71,7 @@ class Planet {
     this.y += this.vy * this.parent.dt;
     this.xViewport = this.convertViewport(this.x, false);
     this.yViewport = this.convertViewport(this.y, true);
-    this.trail.push(this.xViewport);
-    this.trail.push(this.yViewport);
+    this.trail.push([this.x, this.y]);
   };
 }
 
@@ -75,6 +83,7 @@ decorate(Planet, {
   mass: observable,
   update: action,
   radius: computed,
+  trailViewport: computed,
   x: observable,
   y: observable,
   xViewport: observable,
@@ -107,8 +116,8 @@ class Store {
       })
     );
 
-    new Array(random(2, 8)).fill(0).forEach(() => {
-      const x = random(1, 3, true);
+    new Array(random(2, 12)).fill(0).forEach(() => {
+      const x = random(0.6, 2, true);
       const y = 0;
 
       this.planets.push(

@@ -1,23 +1,34 @@
 import "mobx-react/batchingOptOut";
 
-import { Circle, Layer, Line, Rect, Stage } from "react-konva";
+import { Circle, Layer, Line, Rect, Stage, Text } from "react-konva";
 
 import React from "react";
 import { observer } from "mobx-react";
 import store from "./store";
-import { takeRight } from "lodash";
 
 export default observer(() => {
   return (
     <Stage width={store.maxX} height={store.maxY}>
       <Layer fill="#000">
         <Rect width={store.maxX} height={store.maxY} fill="black" />
+        {["This", "Solar", "System", "Does", "Not", "Exist"].map((w, wi) => (
+          <Text
+            key={wi}
+            text={w}
+            fill="#fff"
+            fontSize={40}
+            y={store.maxY - 6 * 50 + wi * 50}
+            x={10}
+            fontFamily="Courier New"
+            fontStyle="bold"
+          />
+        ))}
 
         {store.planets.map((p, pi) => {
           return (
             <Line
               key={pi}
-              points={takeRight(p.trail, 250)}
+              points={p.trailViewport}
               stroke="#ddd"
               strokeWidth={1}
             />
